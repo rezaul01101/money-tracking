@@ -81,4 +81,6 @@ model Budget {
 enum TransactionType {
   INCOME
   EXPENSE
+  SAVING
+  INVESTMENT
 }

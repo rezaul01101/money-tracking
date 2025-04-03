@@ -5,7 +5,7 @@ import { IUser } from "../auth/auth.interface";
 
 interface ICategoryData {
   name: string;
-  type: 'INCOME' | 'EXPENSE';
+  type: 'INCOME' | 'EXPENSE' | 'SAVING' | 'INVESTMENT';
   user_id: number;
 }
 
