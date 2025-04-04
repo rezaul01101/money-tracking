@@ -17,5 +17,10 @@ router.get(
   auth("user"),
   CategoryController.categoryList
 );
+router.delete(
+  "/:id",
+  auth("user"),
+  CategoryController.deleteCategory
+);
 
 export const CategoryRoutes = router;
