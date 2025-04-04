@@ -6,21 +6,21 @@ import { IUser } from "../auth/auth.interface";
 interface ITransactionData {
   amount: number;
   date: string;
-  category_id: number;
-  type: 'INCOME' | 'EXPENSE';
+  categoryId: string;
   notes: string;
+  type: TransactionType;
 }
 
 //signup user
 const insertIntoDB = async (data: ITransactionData, user: User): Promise<any> => {
-  const { amount, date, category_id, type, notes } = data;
+  const { amount, date, categoryId, notes ,type } = data;
 
   // //category create
   const result = await prisma.transaction.create({
     data: {
-      amount: amount,
+      amount: Number(amount),
       date: new Date(date),
-      category_id: category_id,
+      category_id: Number(categoryId),
       type: type as TransactionType,
       notes: notes,
       user_id: user.id,
@@ -61,7 +61,7 @@ const transactionDelete = async (id: number, user: User): Promise<any> => {
   });
   return result;
 };
-export const CategoryService = {
+export const TransactionService = {
   insertIntoDB,
   transactionList,
   transactionDelete

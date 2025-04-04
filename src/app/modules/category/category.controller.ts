@@ -28,6 +28,18 @@ const categoryList = catchAsync(async (req: Request, res: Response) => {
     data: response,
   });
 });
+const categoryListByType = catchAsync(async (req: Request, res: Response) => {
+  const {type} = req.params;
+  const user = req.user;
+  
+  const response = await CategoryService.listCategoryByType(user,type);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Category list fetched successfully !",
+    data: response,
+  });
+});
 const deleteCategory = catchAsync(async (req: Request, res: Response) => {
   const {id} = req.params;
   
@@ -43,5 +55,6 @@ const deleteCategory = catchAsync(async (req: Request, res: Response) => {
 export const CategoryController = {
   createCategory,
   categoryList,
-  deleteCategory
+  deleteCategory,
+  categoryListByType
 };

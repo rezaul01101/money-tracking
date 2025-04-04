@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
-import { CategoryService } from "./transaction.service";
+import { TransactionService } from "./transaction.service";
 import config from "../../../config";
 
 const createTransaction = catchAsync(async (req: Request, res: Response)=> {
   const { ...transactionData  } = req.body;
   const user = req.user;
   
-  const result = await CategoryService.insertIntoDB(transactionData,user);
+  const result = await TransactionService.insertIntoDB(transactionData,user);
   
   sendResponse(res, {
     statusCode: 200,
@@ -17,6 +17,7 @@ const createTransaction = catchAsync(async (req: Request, res: Response)=> {
     data: result,
   });
 });
+
 const transactionList = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   

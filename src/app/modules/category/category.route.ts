@@ -17,6 +17,11 @@ router.get(
   auth("user"),
   CategoryController.categoryList
 );
+router.get(
+  "/list/:type",
+  auth("user"),
+  CategoryController.categoryListByType
+);
 router.delete(
   "/:id",
   auth("user"),

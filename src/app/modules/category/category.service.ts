@@ -43,6 +43,15 @@ const listCategory = async (user: User): Promise<any> => {
   });
   return result;
 };
+const listCategoryByType = async (user: User,type:string): Promise<any> => {
+  const result = await prisma.category.findMany({
+    where: {
+      user_id: user.id,
+      type: type as TransactionType,
+    },
+  });
+  return result;
+};
 const deleteCategory = async (id: number): Promise<any> => {
   const result = await prisma.category.delete({
     where: {
@@ -54,5 +63,6 @@ const deleteCategory = async (id: number): Promise<any> => {
 export const CategoryService = {
   insertIntoDB,
   listCategory,
-  deleteCategory
+  deleteCategory,
+  listCategoryByType
 };
