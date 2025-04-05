@@ -14,8 +14,8 @@ const users = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getUser = catchAsync(async (req: Request, res: Response)=>{
-  const token = req.headers.authorization as string;
-  const response = await UserService.getUserFromDB(token);
+  const user = req.user;
+  const response = await UserService.getUserFromDB(user);
   sendResponse(res, {
     statusCode: 200,
     success: true,

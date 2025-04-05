@@ -17,6 +17,11 @@ router.get(
   auth("user"),
   TransactionController.transactionList
 );
+router.get(
+  "/list/:type",
+  auth("user"),
+  TransactionController.transactionListByType
+);
 router.delete(
   "/:id",
   auth("user"),

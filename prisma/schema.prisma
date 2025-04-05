@@ -21,6 +21,7 @@ model User {
   password     String
   categories   Category[]
   transactions Transaction[]
+  settings     UserSetting[]
   budgets      Budget[]
   deletedAt    DateTime?     @map(name: "deleted_at")
   createdAt    DateTime      @default(now()) @map(name: "created_at")
@@ -76,6 +77,18 @@ model Budget {
   updatedAt   DateTime? @updatedAt @map(name: "updated_at")
 
   @@map("budgets")
+}
+
+model UserSetting {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   Int
+  key       String
+  value     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([user_id, key])
 }
 
 enum TransactionType {

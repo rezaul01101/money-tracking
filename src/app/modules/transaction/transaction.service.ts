@@ -1,6 +1,6 @@
 import { TransactionType, User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { ICategory} from "./category.interface";
+import { ICategory} from "./transaction.interface";
 import { IUser } from "../auth/auth.interface";
 
 interface ITransactionData {
@@ -51,6 +51,21 @@ const transactionList = async (user: User): Promise<any> => {
   });
   return result;
 };
+const transactionListByType = async (user: User,type:TransactionType): Promise<any> => {
+  const result = await prisma.transaction.findMany({
+    where: {
+      user_id: user.id,
+      type: type,
+    },
+    orderBy: {
+      date: "desc",
+    },
+    include: {
+      category: true,
+    },
+  });
+  return result;
+};
 
 const transactionDelete = async (id: number, user: User): Promise<any> => {
   const result = await prisma.transaction.delete({
@@ -64,5 +79,6 @@ const transactionDelete = async (id: number, user: User): Promise<any> => {
 export const TransactionService = {
   insertIntoDB,
   transactionList,
-  transactionDelete
+  transactionDelete,
+  transactionListByType
 };
