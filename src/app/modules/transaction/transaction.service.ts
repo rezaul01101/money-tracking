@@ -1,7 +1,5 @@
 import { TransactionType, User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { ICategory} from "./transaction.interface";
-import { IUser } from "../auth/auth.interface";
 
 interface ITransactionData {
   amount: number;
@@ -45,17 +43,20 @@ const transactionList = async (user: User): Promise<any> => {
     where: {
       user_id: user.id,
     },
+    orderBy: {
+      date: "desc",
+    },
     include: {
       category: true,
     },
   });
   return result;
 };
-const transactionListByType = async (user: User,type:TransactionType): Promise<any> => {
+const transactionListByType = async (user: User,type:TransactionType | "FULL"): Promise<any> => {
   const result = await prisma.transaction.findMany({
     where: {
       user_id: user.id,
-      type: type,
+      ...(type !== "FULL" && { type }),
     },
     orderBy: {
       date: "desc",

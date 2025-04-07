@@ -4,6 +4,7 @@ import { AuthRoutes } from '../modules/auth/auth.route';
 import { CategoryRoutes } from "../modules/category/category.route";
 import { TransactionRoutes } from "../modules/transaction/transaction.route";
 import { SettingsRoutes } from "../modules/settings/settings.route";
+import { PaymentMethodRoutes } from "../modules/paymentMethods/paymentMethod.route";
 
 const router = express.Router();
 const moduleRoutes = [
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: "/transaction",
     route: TransactionRoutes,
+  },
+  {
+    path: "/payment-method",
+    route: PaymentMethodRoutes,
   },
   {
     path: "/settings",

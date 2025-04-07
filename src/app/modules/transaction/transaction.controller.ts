@@ -33,7 +33,7 @@ const transactionListByType = catchAsync(async (req: Request, res: Response) => 
   const user = req.user;
   const {type}=req.params
   
-  const response = await TransactionService.transactionListByType(user,type as TransactionType);
+  const response = await TransactionService.transactionListByType(user,type as TransactionType || "FULL");
   sendResponse(res, {
     statusCode: 200,
     success: true,

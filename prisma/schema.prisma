@@ -21,6 +21,7 @@ model User {
   password     String
   categories   Category[]
   transactions Transaction[]
+  paymentmethods PaymentMethod[]
   settings     UserSetting[]
   budgets      Budget[]
   deletedAt    DateTime?     @map(name: "deleted_at")
@@ -64,8 +65,8 @@ model Transaction {
 
 model Budget {
   id          Int       @id @default(autoincrement())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int
+  user        User      @relation(fields: [user_id], references: [id])
+  user_id      Int
   category    Category  @relation(fields: [category_id], references: [id])
   category_id Int
   amount      Decimal
@@ -91,9 +92,35 @@ model UserSetting {
   @@unique([user_id, key])
 }
 
+model PaymentMethod {
+  id               Int      @id @default(autoincrement())
+  name             String
+  nameLocalized    String?  // Optional, as it's not marked required in the UI
+  type             PaymentType
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   Int
+  code             String?  // Optional, not required in the UI
+  initialAmount    Float    @default(0.0)
+  status           String   @default("1") // Based on status cards like "Active" in UI
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
 enum TransactionType {
   INCOME
   EXPENSE
   SAVING
   INVESTMENT
+}
+
+enum PaymentType {
+  Cash
+  Card
+  GiftCard
+  ThirdParty
+  MobilePay
+  Other
+  BankTransfer
+  HouseAccount
 }
