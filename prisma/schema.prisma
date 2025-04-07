@@ -14,19 +14,19 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  name         String?
-  email        String        @unique
-  image        String?
-  password     String
-  categories   Category[]
-  transactions Transaction[]
+  id             Int             @id @default(autoincrement())
+  name           String?
+  email          String          @unique
+  image          String?
+  password       String
+  categories     Category[]
+  transactions   Transaction[]
   paymentmethods PaymentMethod[]
-  settings     UserSetting[]
-  budgets      Budget[]
-  deletedAt    DateTime?     @map(name: "deleted_at")
-  createdAt    DateTime      @default(now()) @map(name: "created_at")
-  updatedAt    DateTime?     @updatedAt @map(name: "updated_at")
+  settings       UserSetting[]
+  budgets        Budget[]
+  deletedAt      DateTime?       @map(name: "deleted_at")
+  createdAt      DateTime        @default(now()) @map(name: "created_at")
+  updatedAt      DateTime?       @updatedAt @map(name: "updated_at")
 
   @@map("users")
 }
@@ -46,19 +46,37 @@ model Category {
   @@map("categories")
 }
 
+model PaymentMethod {
+  id            Int           @id @default(autoincrement())
+  name          String
+  nameLocalized String? // Optional, as it's not marked required in the UI
+  type          PaymentType
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       Int
+  transactions  Transaction[]
+  code          String? // Optional, not required in the UI
+  initialAmount Float         @default(0.0)
+  status        String        @default("1") // Based on status cards like "Active" in UI
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
 model Transaction {
-  id          Int             @id @default(autoincrement())
-  user        User            @relation(fields: [user_id], references: [id])
-  user_id     Int
-  category    Category        @relation(fields: [category_id], references: [id])
-  category_id Int
-  amount      Decimal
-  type        TransactionType
-  date        DateTime        @default(now())
-  notes       String? // Optional field for additional details
-  deletedAt   DateTime?       @map(name: "deleted_at")
-  createdAt   DateTime        @default(now()) @map(name: "created_at")
-  updatedAt   DateTime?       @updatedAt @map(name: "updated_at")
+  id                Int             @id @default(autoincrement())
+  user              User            @relation(fields: [user_id], references: [id])
+  user_id           Int
+  category          Category        @relation(fields: [category_id], references: [id])
+  category_id       Int
+  paymentMethod     PaymentMethod   @relation(fields: [payment_method_id], references: [id])
+  payment_method_id Int
+  amount            Decimal
+  type              TransactionType
+  date              DateTime        @default(now())
+  notes             String? // Optional field for additional details
+  deletedAt         DateTime?       @map(name: "deleted_at")
+  createdAt         DateTime        @default(now()) @map(name: "created_at")
+  updatedAt         DateTime?       @updatedAt @map(name: "updated_at")
 
   @@map("transactions")
 }
@@ -66,7 +84,7 @@ model Transaction {
 model Budget {
   id          Int       @id @default(autoincrement())
   user        User      @relation(fields: [user_id], references: [id])
-  user_id      Int
+  user_id     Int
   category    Category  @relation(fields: [category_id], references: [id])
   category_id Int
   amount      Decimal
@@ -90,21 +108,6 @@ model UserSetting {
   updatedAt DateTime @updatedAt
 
   @@unique([user_id, key])
-}
-
-model PaymentMethod {
-  id               Int      @id @default(autoincrement())
-  name             String
-  nameLocalized    String?  // Optional, as it's not marked required in the UI
-  type             PaymentType
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id   Int
-  code             String?  // Optional, not required in the UI
-  initialAmount    Float    @default(0.0)
-  status           String   @default("1") // Based on status cards like "Active" in UI
-  notes            String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
 }
 
 enum TransactionType {

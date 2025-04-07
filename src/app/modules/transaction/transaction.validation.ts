@@ -9,7 +9,10 @@ const createZodSchema = z.object({
       required_error: 'date is required',
     }),
     categoryId: z.string({
-      required_error: 'category_id is required',
+      required_error: 'category is required',
+    }),
+    paymentMethodId: z.string({
+      required_error: 'Payment method is required',
     }),
     type: z.enum(['INCOME', 'EXPENSE'], {
       required_error: 'type is required',

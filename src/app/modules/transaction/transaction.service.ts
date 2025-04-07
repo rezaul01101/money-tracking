@@ -7,11 +7,15 @@ interface ITransactionData {
   categoryId: string;
   notes: string;
   type: TransactionType;
+  paymentMethodId: string | number;
 }
 
 //signup user
-const insertIntoDB = async (data: ITransactionData, user: User): Promise<any> => {
-  const { amount, date, categoryId, notes ,type } = data;
+const insertIntoDB = async (
+  data: ITransactionData,
+  user: User
+): Promise<any> => {
+  const { amount, date, categoryId, notes, type, paymentMethodId } = data;
 
   // //category create
   const result = await prisma.transaction.create({
@@ -21,6 +25,7 @@ const insertIntoDB = async (data: ITransactionData, user: User): Promise<any> =>
       category_id: Number(categoryId),
       type: type as TransactionType,
       notes: notes,
+      payment_method_id: Number(paymentMethodId),
       user_id: user.id,
     },
     include: {
@@ -29,9 +34,9 @@ const insertIntoDB = async (data: ITransactionData, user: User): Promise<any> =>
           id: true,
           name: true,
           email: true,
-          image: true
-        }
-      }
+          image: true,
+        },
+      },
     },
   });
 
@@ -48,11 +53,15 @@ const transactionList = async (user: User): Promise<any> => {
     },
     include: {
       category: true,
+      paymentMethod: true,
     },
   });
   return result;
 };
-const transactionListByType = async (user: User,type:TransactionType | "FULL"): Promise<any> => {
+const transactionListByType = async (
+  user: User,
+  type: TransactionType | "FULL"
+): Promise<any> => {
   const result = await prisma.transaction.findMany({
     where: {
       user_id: user.id,
@@ -63,6 +72,7 @@ const transactionListByType = async (user: User,type:TransactionType | "FULL"): 
     },
     include: {
       category: true,
+      paymentMethod: true,
     },
   });
   return result;
@@ -81,5 +91,5 @@ export const TransactionService = {
   insertIntoDB,
   transactionList,
   transactionDelete,
-  transactionListByType
+  transactionListByType,
 };
