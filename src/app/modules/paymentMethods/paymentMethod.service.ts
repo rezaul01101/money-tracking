@@ -47,7 +47,6 @@ const paymentMethodList = async (user: User): Promise<any> => {
   
   const result = paymentMethods.map(pm => {
     const balance = pm.transactions.reduce((acc, txn) => {
-      console.log(txn,acc);
       const amt = Number(txn.amount);
       return txn.type === 'INCOME' ? acc + amt : acc - amt;
     }, 0);

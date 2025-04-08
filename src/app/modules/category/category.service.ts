@@ -1,15 +1,14 @@
 import { TransactionType, User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { ICategory} from "./category.interface";
+import { ICategory } from "./category.interface";
 import { IUser } from "../auth/auth.interface";
 
 interface ICategoryData {
   name: string;
-  type: 'INCOME' | 'EXPENSE' | 'SAVING' | 'INVESTMENT';
+  type: "INCOME" | "EXPENSE" | "SAVING" | "INVESTMENT";
   user_id: number;
 }
 
-//signup user
 const insertIntoDB = async (data: ICategoryData, user: User): Promise<any> => {
   const { name, type } = data;
 
@@ -26,9 +25,9 @@ const insertIntoDB = async (data: ICategoryData, user: User): Promise<any> => {
           id: true,
           name: true,
           email: true,
-          image: true
-        }
-      }
+          image: true,
+        },
+      },
     },
   });
 
@@ -36,14 +35,32 @@ const insertIntoDB = async (data: ICategoryData, user: User): Promise<any> => {
 };
 
 const listCategory = async (user: User): Promise<any> => {
-  const result = await prisma.category.findMany({
+  const categories = await prisma.category.findMany({
     where: {
       user_id: user.id,
     },
+    include: {
+      transactions: {
+        select: {
+          amount: true,
+          type: true,
+        },
+      },
+    },
+  });
+  const result = categories.map((category) => {
+    const balance = category.transactions.reduce((acc, txn) => {
+      const amt = Number(txn.amount);
+      return txn.type === "INCOME" ? acc + amt : acc - amt;
+    }, 0);
+    return {
+      ...category,
+      balance,
+    };
   });
   return result;
 };
-const listCategoryByType = async (user: User,type:string): Promise<any> => {
+const listCategoryByType = async (user: User, type: string): Promise<any> => {
   const result = await prisma.category.findMany({
     where: {
       user_id: user.id,
@@ -64,5 +81,5 @@ export const CategoryService = {
   insertIntoDB,
   listCategory,
   deleteCategory,
-  listCategoryByType
+  listCategoryByType,
 };
