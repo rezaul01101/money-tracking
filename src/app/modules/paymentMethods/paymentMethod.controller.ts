@@ -4,12 +4,12 @@ import sendResponse from "../../../shared/sendResponse";
 import { PaymentMethodService } from "./paymentMethod.service";
 import { TransactionType } from "@prisma/client";
 
-const create = catchAsync(async (req: Request, res: Response)=> {
-  const { ...data  } = req.body;
+const create = catchAsync(async (req: Request, res: Response) => {
+  const { ...data } = req.body;
   const user = req.user;
-  
-  const result = await PaymentMethodService.insertIntoDB(data,user);
-  
+
+  const result = await PaymentMethodService.insertIntoDB(data, user);
+
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -20,7 +20,7 @@ const create = catchAsync(async (req: Request, res: Response)=> {
 
 const list = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
-  
+
   const response = await PaymentMethodService.paymentMethodList(user);
   sendResponse(res, {
     statusCode: 200,
@@ -33,8 +33,11 @@ const list = catchAsync(async (req: Request, res: Response) => {
 const dataDelete = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const { id } = req.params;
-  
-  const response = await PaymentMethodService.paymentMethodDelete(Number(id),user);
+
+  const response = await PaymentMethodService.paymentMethodDelete(
+    Number(id),
+    user
+  );
   sendResponse(res, {
     statusCode: 200,
     success: true,
