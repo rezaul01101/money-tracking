@@ -3,6 +3,8 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { AuthService } from "./auth.service";
 import config from "../../../config";
+import sendEmail from "../../../utils/sendEmail";
+import { varificationEmail } from "../../../utils/emailList";
 
 const loginUser = catchAsync(async (req: Request, res: Response)=> {
   const { ...loginData } = req.body;
@@ -29,6 +31,7 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
   const { ...registerData } = req.body;
   
   const response = await AuthService.insertIntoDB(registerData);
+  varificationEmail('rezaulhoque0101@gmail.com', 'Rezaul Hoque')
   sendResponse(res, {
     statusCode: 200,
     success: true,

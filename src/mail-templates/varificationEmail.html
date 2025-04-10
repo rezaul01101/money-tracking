@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verification</title>
+    <style>
+      /* Reset styles for email clients */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+      .content {
+        padding: 30px 40px;
+        text-align: center;
+      }
+      .image-container {
+        margin: 20px 0 30px;
+      }
+      .image-container img {
+        max-width: 120px;
+        height: auto;
+      }
+      h1 {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+      p {
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .email-address {
+        font-weight: 500;
+      }
+      .button-container {
+        margin: 30px 0;
+      }
+      .verify-button {
+        display: inline-block;
+        padding: 12px 28px;
+        background-color: #4285f4;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+      }
+      .alternative-link {
+        font-size: 13px;
+        color: #777;
+        margin-top: 15px;
+      }
+      .alternative-link a {
+        color: #4285f4;
+        text-decoration: none;
+        word-break: break-all;
+      }
+
+      /* Responsive styles */
+      @media only screen and (max-width: 600px) {
+        .container {
+          width: 100%;
+          margin: 10px auto;
+          border-radius: 0;
+        }
+        .content {
+          padding: 25px 20px;
+        }
+      }
+      @media only screen and (max-width: 400px) {
+        h1 {
+          font-size: 20px;
+        }
+        p {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <div class="image-container">
+          <img
+            src="https://i.ibb.co/YQrDSxV/email-verification.png"
+            alt="Email verification icon"
+          />
+        </div>
+        <h1>Verify your email address</h1>
+        <p>
+          You've entered <span class="email-address">{{email}}</span> as the
+          email address for your account.
+        </p>
+        <p>Please verify this email address by clicking button below.</p>
+        <div class="button-container">
+          <a href="{{ verification_link }}" class="verify-button"
+            >Verify your email</a
+          >
+        </div>
+        <p class="alternative-link">
+          Or copy and paste the link into your browser:<br />
+          <a href="{{  verification_link }}">{{verification_link}}</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
