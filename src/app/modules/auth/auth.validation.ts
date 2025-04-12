@@ -31,9 +31,33 @@ const forgotPasswordZodSchema = z.object({
     }),
   }),
 });
-
+const verifyOtp = z.object({
+  body: z.object({
+    otp: z.string({
+      required_error: 'otp is required',
+    }),
+    email: z.string({
+      required_error: 'email is required',
+    }),
+  }),
+});
+const resetPasswordZodSchema = z.object({
+  body: z.object({
+    password: z.string({
+      required_error: 'Password is required',
+    }),
+    email: z.string({
+      required_error: 'email is required',
+    }),
+    otp: z.string({
+      required_error: 'otp is required',
+    }),
+  }),
+});
 export const AuthValidation = {
     loginZodSchema,
     registerZodSchema,
-    forgotPasswordZodSchema
+    forgotPasswordZodSchema,
+    verifyOtp,
+    resetPasswordZodSchema
   };

@@ -92,7 +92,7 @@ const forgotPassword = async (email: string): Promise<any> => {
   }
 
   const resetCode = Math.floor(10000 + Math.random() * 90000).toString();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 15 min
+  const expiresAt = new Date(Date.now() + 40 * 60 * 1000); // 40 min
 
   const passwordRest = await prisma.passwordReset.create({
     data: {
@@ -101,12 +101,65 @@ const forgotPassword = async (email: string): Promise<any> => {
       expiresAt,
     },
   });
-
-
   return passwordRest;
 };
+const verifyOtpFromDb = async (otp:string,email:string):Promise<any>=>{
+  const isOtpExists = await prisma.passwordReset.findFirst({
+    where:{
+      email: email,
+      code:otp,
+      expiresAt: {
+        gte: new Date(), // not expired
+      },
+    },
+  })
+  if(!isOtpExists){
+    throw new ApiError(httpStatus.NOT_FOUND, "Otp is not valid");
+  }
+return isOtpExists;
+}
+const resetPassword = async (password:string,email:string,otp:string):Promise<any>=>{
+  //check otp is valid or not
+  const isOtpExists = await prisma.passwordReset.findFirst({
+    where:{
+      email: email,
+      code:otp,
+      expiresAt: {
+        gte: new Date(), // not expired
+      },
+    },
+  })
+  if(!isOtpExists){
+    throw new ApiError(httpStatus.NOT_FOUND, "Otp is not valid");
+  }
+  //update password
+  const encodedPassword = await bcrypt.hash(
+    password,
+    Number(config.bycrypt_salt_rounds)
+  );
+  const result = await prisma.user.update({
+    where:{
+      email: email,
+    },
+    data:{
+      password: encodedPassword,
+    },
+  })
+
+  //delete otp from db
+  if(result){
+    await prisma.passwordReset.delete({
+      where:{
+        id: isOtpExists?.id,
+      },
+    })
+  }
+  return result;
+}
 export const AuthService = {
   insertIntoDB,
   loginUser,
   forgotPassword,
+  verifyOtpFromDb,
+  resetPassword
 };

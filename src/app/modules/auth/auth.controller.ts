@@ -4,7 +4,7 @@ import sendResponse from "../../../shared/sendResponse";
 import { AuthService } from "./auth.service";
 import config from "../../../config";
 import sendEmail from "../../../utils/sendEmail";
-import { varificationEmail } from "../../../utils/emailList";
+import { otpSendForPasswordResetEmail, varificationEmail } from "../../../utils/emailList";
 
 const loginUser = catchAsync(async (req: Request, res: Response)=> {
   const { ...loginData } = req.body;
@@ -42,7 +42,7 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
 const forgotPassword = catchAsync(async (req: Request, res: Response) => {
   const { email } = req.body;
   const result = await AuthService.forgotPassword(email);
-  varificationEmail(result?.email, 'Rezaul Hoque')
+  otpSendForPasswordResetEmail(result?.email, 'Rezaul Hoque',result?.code)
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -50,8 +50,32 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const { otp,email } = req.body;
+  const result = await AuthService.verifyOtpFromDb(otp,email);
+  // otpSendForPasswordResetEmail(result?.email, 'Rezaul Hoque',result?.code)
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "otp is valid !",
+    data: result,
+  });
+});
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { password, email, otp } = req.body;
+  const result = await AuthService.resetPassword(password, email, otp);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Password reset successfully !",
+    data: result,
+  });
+});
 export const AuthController = {
   loginUser,
   registerUser,
-  forgotPassword
+  forgotPassword,
+  verifyOtp,
+  resetPassword
 };
