@@ -29,5 +29,10 @@ router.post(
   validateRequest(AuthValidation.resetPasswordZodSchema),
   AuthController.resetPassword
 );
+router.post(
+  "/varification-token-check",
+  validateRequest(AuthValidation.varificationTokenCheckZodSchema),
+  AuthController.varificationTokenCheck
+);
 
 export const AuthRoutes = router;

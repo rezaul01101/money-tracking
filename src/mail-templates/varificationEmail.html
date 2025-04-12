@@ -3,128 +3,133 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Email Verification</title>
+    <title>Password Reset Code</title>
     <style>
-      /* Reset styles for email clients */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
       body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        line-height: 1.5;
         color: #333;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
+        padding: 20px;
       }
       .container {
         max-width: 600px;
-        margin: 20px auto;
-        background-color: #ffffff;
+        margin: 0 auto;
+        background: #fff;
         border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+      }
+      .logo {
+        width: 32px;
+        height: 32px;
+        background: #000;
+        border-radius: 50%;
+      }
+      .social-links {
+        display: flex;
+        gap: 15px;
+      }
+      .social-links a {
+        color: #666;
+        text-decoration: none;
       }
       .content {
-        padding: 30px 40px;
-        text-align: center;
-      }
-      .image-container {
-        margin: 20px 0 30px;
-      }
-      .image-container img {
-        max-width: 120px;
-        height: auto;
+        margin-bottom: 30px;
       }
       h1 {
-        font-size: 22px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        color: #333;
+      }
+      .code-container {
+        background: #f5f5f5;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+        margin: 25px 0;
+      }
+      .verification-code {
+        font-size: 20px;
+        font-weight: 600;
+        color: #000;
+      }
+      .expiry-text {
+        font-size: 14px;
         color: #333;
         margin-bottom: 20px;
-        font-weight: 600;
       }
-      p {
-        font-size: 15px;
-        color: #555;
-        margin-bottom: 20px;
-        line-height: 1.5;
+      .footer {
+        font-size: 14px;
+        color: #333;
       }
-      .email-address {
-        font-weight: 500;
+      .signature {
+        margin-top: 20px;
       }
-      .button-container {
-        margin: 30px 0;
+      .footer-logo {
+        margin-top: 30px;
+        text-align: center;
       }
-      .verify-button {
-        display: inline-block;
-        padding: 12px 28px;
-        background-color: #4285f4;
-        color: #ffffff;
-        text-decoration: none;
-        border-radius: 4px;
-        font-size: 15px;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-      }
-      .alternative-link {
-        font-size: 13px;
-        color: #777;
-        margin-top: 15px;
-      }
-      .alternative-link a {
-        color: #4285f4;
-        text-decoration: none;
-        word-break: break-all;
+      .footer-logo img {
+        width: 32px;
+        height: 32px;
+        background: #000;
+        border-radius: 50%;
       }
 
-      /* Responsive styles */
-      @media only screen and (max-width: 600px) {
+      @media only screen and (max-width: 480px) {
         .container {
-          width: 100%;
-          margin: 10px auto;
-          border-radius: 0;
+          padding: 20px;
         }
-        .content {
-          padding: 25px 20px;
-        }
-      }
-      @media only screen and (max-width: 400px) {
-        h1 {
-          font-size: 20px;
-        }
-        p {
-          font-size: 14px;
+        .verification-code {
+          font-size: 28px;
+          letter-spacing: 6px;
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
+      <div class="header">
+        <div class="logo"></div>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook">𝔽</a>
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="Apple"></a>
+        </div>
+      </div>
+
       <div class="content">
-        <div class="image-container">
-          <img
-            src="https://i.ibb.co/YQrDSxV/email-verification.png"
-            alt="Email verification icon"
-          />
+        <h1>Hi {{ name }},</h1>
+        <p>Please verify your email address. We have received {{email}} as the email address associated with your account. To ensure the security of your account, we kindly request you to verify this email address.</p>
+
+        <div class="code-container">
+          <a href="{{url}}" class="verification-code">Click here to verify </a>
         </div>
-        <h1>Verify your email address</h1>
-        <p>
-          You've entered <span class="email-address">{{email}}</span> as the
-          email address for your account.
+
+        <p class="expiry-text">
+          This link will expire in 24 hours.
         </p>
-        <p>Please verify this email address by clicking button below.</p>
-        <div class="button-container">
-          <a href="{{ verification_link }}" class="verify-button"
-            >Verify your email</a
-          >
+
+        <div class="footer">
+          <p>Keep making awesome stuff!</p>
+          <p class="signature">UIDux</p>
         </div>
-        <p class="alternative-link">
-          Or copy and paste the link into your browser:<br />
-          <a href="{{  verification_link }}">{{verification_link}}</a>
-        </p>
+      </div>
+
+      <div class="footer-logo">
+        <div class="logo"></div>
       </div>
     </div>
   </body>

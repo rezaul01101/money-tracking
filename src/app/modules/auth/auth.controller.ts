@@ -31,7 +31,7 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
   const { ...registerData } = req.body;
   
   const response = await AuthService.insertIntoDB(registerData);
-  varificationEmail('rezaulhoque0101@gmail.com', 'Rezaul Hoque')
+  varificationEmail(response?.email, response?.name ,response?.verificationToken)
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -54,7 +54,6 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
 const verifyOtp = catchAsync(async (req: Request, res: Response) => {
   const { otp,email } = req.body;
   const result = await AuthService.verifyOtpFromDb(otp,email);
-  // otpSendForPasswordResetEmail(result?.email, 'Rezaul Hoque',result?.code)
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -72,10 +71,21 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const varificationTokenCheck = catchAsync(async (req: Request, res: Response) => {
+  const { token } = req.body;
+  const result = await AuthService.varificationTokenCheck(token);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Token is valid !",
+    data: result,
+  });
+});
 export const AuthController = {
   loginUser,
   registerUser,
   forgotPassword,
   verifyOtp,
-  resetPassword
+  resetPassword,
+  varificationTokenCheck
 };

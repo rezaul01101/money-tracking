@@ -21,6 +21,10 @@ const loginUser = async (payload: ILoginUser) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User does not exist");
   }
 
+  if(!isUserExist.emailVerified){
+    throw new ApiError(httpStatus.BAD_REQUEST, "Please verify your email first");
+  }
+
   if (
     isUserExist.password &&
     !(await bcrypt.compare(password, isUserExist.password))
@@ -72,11 +76,22 @@ const insertIntoDB = async (data: IUser): Promise<any> => {
     Number(config.bycrypt_salt_rounds)
   );
 
+  //generate verification token
+  const verificationToken = createToken(
+    { email: user?.email, id: user?.id, name: user?.name || "" },
+    config.jwt.secret as string,
+    config.jwt.expires_in as string
+  );
+  const verificationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
   //user create
   const result = await prisma.user.create({
     data: {
       ...user,
       password: encodedPassword,
+      verificationToken: verificationToken,
+      verificationTokenExpiresAt: verificationTokenExpiresAt,
+      emailVerified: null,
     },
   });
   return result;
@@ -156,10 +171,39 @@ const resetPassword = async (password:string,email:string,otp:string):Promise<an
   }
   return result;
 }
-export const AuthService = {
+const varificationTokenCheck = async (token:string):Promise<any>=>{
+  const isTokenExists = await prisma.user.findFirst({
+    where:{
+      verificationToken: token,
+      verificationTokenExpiresAt: {
+        gte: new Date(), // not expired
+      },
+    },
+  });
+
+  if (isTokenExists) {
+    await prisma.user.update({
+      where: {
+        id: isTokenExists.id
+      },
+      data: {
+        emailVerified: new Date(),
+        verificationToken: null,
+        verificationTokenExpiresAt: null
+      }
+    });
+  }
+  if(!isTokenExists){
+    throw new ApiError(httpStatus.NOT_FOUND, "Token is not valid");
+  }
+  
+  return isTokenExists;
+}
+export const  AuthService = {
   insertIntoDB,
   loginUser,
   forgotPassword,
   verifyOtpFromDb,
-  resetPassword
-};
+  resetPassword,
+  varificationTokenCheck
+}

@@ -14,19 +14,22 @@ datasource db {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  name           String?
-  email          String          @unique
-  image          String?
-  password       String
-  categories     Category[]
-  transactions   Transaction[]
-  paymentmethods PaymentMethod[]
-  settings       UserSetting[]
-  budgets        Budget[]
-  deletedAt      DateTime?       @map(name: "deleted_at")
-  createdAt      DateTime        @default(now()) @map(name: "created_at")
-  updatedAt      DateTime?       @updatedAt @map(name: "updated_at")
+  id                         Int             @id @default(autoincrement())
+  name                       String?
+  email                      String          @unique
+  image                      String?
+  password                   String
+  emailVerified              DateTime? 
+  verificationToken          String?
+  verificationTokenExpiresAt DateTime?
+  categories                 Category[]
+  transactions               Transaction[]
+  paymentmethods             PaymentMethod[]
+  settings                   UserSetting[]
+  budgets                    Budget[]
+  deletedAt                  DateTime?       @map(name: "deleted_at")
+  createdAt                  DateTime        @default(now()) @map(name: "created_at")
+  updatedAt                  DateTime?       @updatedAt @map(name: "updated_at")
 
   @@map("users")
 }
@@ -111,7 +114,7 @@ model UserSetting {
 }
 
 model PasswordReset {
-  id        String    @id @default(cuid())
+  id        Int       @id @default(autoincrement())
   email     String
   code      String // 6 digit code
   expiresAt DateTime

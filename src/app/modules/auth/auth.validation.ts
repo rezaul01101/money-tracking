@@ -54,10 +54,18 @@ const resetPasswordZodSchema = z.object({
     }),
   }),
 });
+const varificationTokenCheckZodSchema = z.object({
+  body: z.object({
+    token: z.string({
+      required_error: 'token is required',
+    }),
+  }),
+});
 export const AuthValidation = {
     loginZodSchema,
     registerZodSchema,
     forgotPasswordZodSchema,
     verifyOtp,
-    resetPasswordZodSchema
+    resetPasswordZodSchema,
+    varificationTokenCheckZodSchema
   };
