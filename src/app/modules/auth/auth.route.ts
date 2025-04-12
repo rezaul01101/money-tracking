@@ -14,5 +14,10 @@ router.post(
   validateRequest(AuthValidation.registerZodSchema),
   AuthController.registerUser
 );
+router.post(
+  "/forgot-password",
+  validateRequest(AuthValidation.forgotPasswordZodSchema),
+  AuthController.forgotPassword
+);
 
 export const AuthRoutes = router;

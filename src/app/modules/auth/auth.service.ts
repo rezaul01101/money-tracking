@@ -30,13 +30,13 @@ const loginUser = async (payload: ILoginUser) => {
 
   //create access token & refresh token
   const accessToken = createToken(
-    { email: email, id: isUserExist.id,name:isUserExist?.name},
+    { email: email, id: isUserExist.id, name: isUserExist?.name || "" },
     config.jwt.secret as string,
     config.jwt.expires_in as string
   );
 
   const refreshToken = createToken(
-    { email: email, id: isUserExist?.id,name:isUserExist?.name },
+    { email: email, id: isUserExist?.id, name: isUserExist?.name || "" },
     config.jwt.refresh_secret as string,
     config.jwt.refresh_expires_in as string
   );
@@ -48,7 +48,7 @@ const loginUser = async (payload: ILoginUser) => {
 };
 
 //signup user
-const insertIntoDB = async (data: IUser): Promise<IUser> => {
+const insertIntoDB = async (data: IUser): Promise<any> => {
   const { password, ...user } = data;
 
   //checking exists user by email
@@ -81,7 +81,32 @@ const insertIntoDB = async (data: IUser): Promise<IUser> => {
   });
   return result;
 };
+const forgotPassword = async (email: string): Promise<any> => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User does not exist");
+  }
+
+  const resetCode = Math.floor(10000 + Math.random() * 90000).toString();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 15 min
+
+  const passwordRest = await prisma.passwordReset.create({
+    data: {
+      email,
+      code: resetCode,
+      expiresAt,
+    },
+  });
+
+
+  return passwordRest;
+};
 export const AuthService = {
   insertIntoDB,
   loginUser,
+  forgotPassword,
 };

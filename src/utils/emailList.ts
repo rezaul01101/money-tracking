@@ -20,3 +20,23 @@ export const varificationEmail = async (email: string, name: string) => {
 
   return emailInfo;
 };
+
+export const otpSendForPasswordResetEmail = async (email: string, name: string,otp:string) => {
+  
+  const source = fs.readFileSync(
+    path.join(__dirname, "../mail-templates/forgot-password.html"),
+    "utf-8"
+  );
+  const template = handlebars.compile(source);
+  
+  const emailInfo = await sendEmail({
+    to: email,
+    subject: "Password Reset Code - Money Management",
+    html: template({ email, name, otp }),
+    text: "",
+  });
+
+  return emailInfo;
+};
+
+

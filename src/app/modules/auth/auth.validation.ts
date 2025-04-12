@@ -24,7 +24,16 @@ const registerZodSchema = z.object({
   }),
 });
 
+const forgotPasswordZodSchema = z.object({
+  body: z.object({
+    email: z.string({
+      required_error: 'Email is required',
+    }),
+  }),
+});
+
 export const AuthValidation = {
     loginZodSchema,
-    registerZodSchema
+    registerZodSchema,
+    forgotPasswordZodSchema
   };

@@ -39,8 +39,19 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
     data: response,
   });
 });
-
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const result = await AuthService.forgotPassword(email);
+  varificationEmail(result?.email, 'Rezaul Hoque')
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Password reset email sent successfully !",
+    data: result,
+  });
+});
 export const AuthController = {
   loginUser,
   registerUser,
+  forgotPassword
 };
