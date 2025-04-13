@@ -8,7 +8,7 @@ import ApiError from "../../errors/ApiError";
 
 import { ZodError } from "zod";
 import handleZodError from "../../errors/handleZodError";
-import { errorLogger, logger } from "../../shared/logger";
+// import { errorLogger, logger } from "../../shared/logger";
 
 export type IGenericErrorMessage = {
   path: string | number;
@@ -22,8 +22,8 @@ const globalErrorHandler: ErrorRequestHandler = (
   next: NextFunction
 ) => {
   config.env === "development"
-    ? errorLogger.error(`🐱‍🏍 globalErrorHandler ~~`, { error })
-    : errorLogger.error(`🐱‍🏍 globalErrorHandler ~~`, error);
+    ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
+    : console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
   let statusCode = 500;
   let message = "Something went wrong !";

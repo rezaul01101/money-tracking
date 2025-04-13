@@ -16,7 +16,7 @@ const app: Application = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3001",
+      "http://expense.greatbd.info",
       "http://localhost:3002",
       "http://localhost:3000",
     ],
@@ -37,13 +37,13 @@ app.get("/upload/:imageName", function (req, res) {
 
 app.use("/api/v1", routes);
 
-// app.get("/api/v1/health", (req: Request, res: Response) => {
-//   res.status(200).json({
-//     success: true,
-//     message: "Server is running smoothly",
-//     timestamp: new Date().toISOString()
-//   });
-// });
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is running smoothly",
+    timestamp: new Date().toISOString()
+  });
+});
 
 //global error handler
 app.use(globalErrorHandler);

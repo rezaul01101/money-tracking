@@ -5,6 +5,7 @@ import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
 import { ILoginUser, ILoginUserResponse, IUser } from "./auth.interface";
 import { createToken } from "./auth.utils";
+import { varificationEmail } from "../../../utils/emailList";
 
 //login user
 const loginUser = async (payload: ILoginUser) => {
@@ -21,7 +22,7 @@ const loginUser = async (payload: ILoginUser) => {
     throw new ApiError(httpStatus.NOT_FOUND, "User does not exist");
   }
 
-  if(!isUserExist.emailVerified){
+  if(isUserExist.emailVerified==null){
     throw new ApiError(httpStatus.BAD_REQUEST, "Please verify your email first");
   }
 

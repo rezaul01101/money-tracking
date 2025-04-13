@@ -1,15 +1,18 @@
 {
-  "name": "daily-expense-api",
+  "name": "money-manager-api",
   "version": "1.0.0",
   "description": "A RESTful API for tracking daily expenses and managing personal finances",
   "main": "src/server.ts",
   "author": "Rezaul Hoque",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "npm run clean && tsc",
+    "postinstall": "prisma generate",
+    "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@prisma/client": "^6.5.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
@@ -18,10 +21,12 @@
     "@types/node": "^20.11.24",
     "@types/nodemailer": "^6.4.17",
     "prisma": "^6.5.0",
+    "rimraf": "^6.0.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
