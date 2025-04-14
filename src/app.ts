@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://expense.greatbd.info",
-      "http://localhost:3002",
+      "https://money-tracking-client.vercel.app",
       "http://localhost:3000",
     ],
     credentials: true,
