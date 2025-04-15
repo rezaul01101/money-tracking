@@ -53,9 +53,21 @@ const transactionDelete = catchAsync(async (req: Request, res: Response) => {
     data: response,
   });
 });
+const updateTransaction = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { ...transactionData } = req.body;
 
+  const response = await TransactionService.updateTransaction(transactionData,user);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Transaction updated successfully !",
+    data: response,
+  });
+});
 export const TransactionController = {
   createTransaction,
+  updateTransaction,
   transactionList,
   transactionListByType,
   transactionDelete

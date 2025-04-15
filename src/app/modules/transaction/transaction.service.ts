@@ -2,6 +2,7 @@ import { TransactionType, User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 
 interface ITransactionData {
+  id: number;
   amount: number;
   date: string;
   categoryId: string;
@@ -87,9 +88,27 @@ const transactionDelete = async (id: number, user: User): Promise<any> => {
   });
   return result;
 };
+const updateTransaction = async (data: ITransactionData, user: User): Promise<any> => {
+  const result = await prisma.transaction.update({
+    where: {
+      id: data?.id,
+      user_id: user?.id,
+    },
+    data: {
+      amount: Number(data.amount),
+      date: new Date(data.date),
+      category_id: Number(data.categoryId),
+      notes: data.notes,
+      type: data.type as TransactionType,
+      payment_method_id: Number(data.paymentMethodId),
+    },
+  });
+  return result;
+};
 export const TransactionService = {
   insertIntoDB,
   transactionList,
   transactionDelete,
+  updateTransaction,
   transactionListByType,
 };

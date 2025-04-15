@@ -12,6 +12,12 @@ router.post(
   validateRequest(TransactionValidation.createZodSchema),
   TransactionController.createTransaction
 );
+router.post(
+  "/update",
+  auth("user"), 
+  validateRequest(TransactionValidation.updateZodSchema),
+  TransactionController.updateTransaction
+);
 router.get(
   "/list",
   auth("user"),
