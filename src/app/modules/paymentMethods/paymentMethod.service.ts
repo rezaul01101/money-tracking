@@ -56,17 +56,6 @@ const paymentMethodList = async (user: User): Promise<any> => {
       balance,
     };
   });
-  
-  
-
-  // const result = await prisma.paymentMethod.findMany({
-  //   where: {
-  //     user_id: user.id,
-  //   },
-  //   orderBy: {
-  //     createdAt: "desc",
-  //   },
-  // });
   return result;
 };
 const paymentMethodDelete = async (id: number, user: User): Promise<any> => {
@@ -78,8 +67,17 @@ const paymentMethodDelete = async (id: number, user: User): Promise<any> => {
   });
   return result;
 };
+const updateIntoDB = async (data: IPaymentMethod, user: User): Promise<any> => {
+  const { id, amount, paymentType, name, notes } = data;
+  const result = await prisma.paymentMethod.update({
+    where: { id, user_id: user.id },
+    data: { initialAmount: Number(amount), type: paymentType as PaymentType, notes, name },
+  });
+  return result;
+};
 export const PaymentMethodService = {
   insertIntoDB,
   paymentMethodList,
   paymentMethodDelete,
+  updateIntoDB,
 };

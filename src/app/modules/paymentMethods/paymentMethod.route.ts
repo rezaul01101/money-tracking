@@ -11,6 +11,17 @@ router.post(
   validateRequest(PaymentMethodValidation.createZodSchema),
   PaymentMethodController.create
 );
+router.post(
+  "/update",
+  auth("user"),
+  validateRequest(PaymentMethodValidation.updateZodSchema),
+  PaymentMethodController.update
+);
+router.delete(
+  "/:id",
+  auth("user"),
+  PaymentMethodController.dataDelete
+);
 router.get("/list", auth("user"), PaymentMethodController.list);
 
 export const PaymentMethodRoutes = router;

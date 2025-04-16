@@ -46,8 +46,21 @@ const dataDelete = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const update = catchAsync(async (req: Request, res: Response) => {
+  const { ...data } = req.body;
+  const user = req.user;
+
+  const response = await PaymentMethodService.updateIntoDB(data, user);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Payment Method updated successfully !",
+    data: response,
+  });
+});
 export const PaymentMethodController = {
   create,
   list,
   dataDelete,
+  update,
 };
