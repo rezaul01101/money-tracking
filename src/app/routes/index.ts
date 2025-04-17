@@ -5,6 +5,7 @@ import { CategoryRoutes } from "../modules/category/category.route";
 import { TransactionRoutes } from "../modules/transaction/transaction.route";
 import { SettingsRoutes } from "../modules/settings/settings.route";
 import { PaymentMethodRoutes } from "../modules/paymentMethods/paymentMethod.route";
+import { AiRoutes } from "../modules/askAi/ai.route";
 
 const router = express.Router();
 const moduleRoutes = [
@@ -31,6 +32,10 @@ const moduleRoutes = [
   {
     path: "/settings",
     route: SettingsRoutes,
+  },
+  {
+    path: "/ai",
+    route: AiRoutes,
   },
 ];
 

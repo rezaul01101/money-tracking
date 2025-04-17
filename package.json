@@ -26,6 +26,8 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@google/genai": "^0.8.0",
+    "@google/generative-ai": "^0.24.0",
     "@prisma/client": "^6.5.0",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^5.1.1",

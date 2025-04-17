@@ -12,6 +12,7 @@ export default {
   bycrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   frontend_url: process.env.FRONTEND_URL,
   app_name: process.env.APP_NAME,
+  google_api_key: process.env.GOOGLE_API_KEY,
   jwt: {
     secret: process.env.JWT_SECRET as Secret,
     refresh_secret: process.env.JWT_REFRESH_SECRET,

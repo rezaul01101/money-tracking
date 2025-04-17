@@ -35,6 +35,9 @@ const paymentMethodList = async (user: User): Promise<any> => {
     where: {
       user_id: user.id,
     },
+    orderBy: {
+      name: "asc",
+    },
     include: {
       transactions: {
         select: {
@@ -44,13 +47,13 @@ const paymentMethodList = async (user: User): Promise<any> => {
       },
     },
   });
-  
-  const result = paymentMethods.map(pm => {
+
+  const result = paymentMethods.map((pm) => {
     const balance = pm.transactions.reduce((acc, txn) => {
       const amt = Number(txn.amount);
-      return txn.type === 'INCOME' ? acc + amt : acc - amt;
+      return txn.type === "INCOME" ? acc + amt : acc - amt;
     }, 0);
-  
+
     return {
       ...pm,
       balance,
@@ -71,7 +74,12 @@ const updateIntoDB = async (data: IPaymentMethod, user: User): Promise<any> => {
   const { id, amount, paymentType, name, notes } = data;
   const result = await prisma.paymentMethod.update({
     where: { id, user_id: user.id },
-    data: { initialAmount: Number(amount), type: paymentType as PaymentType, notes, name },
+    data: {
+      initialAmount: Number(amount),
+      type: paymentType as PaymentType,
+      notes,
+      name,
+    },
   });
   return result;
 };
