@@ -27,6 +27,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.7.0",
     "@google/genai": "^0.8.0",
     "@google/generative-ai": "^0.24.0",
     "@prisma/client": "^6.5.0",
