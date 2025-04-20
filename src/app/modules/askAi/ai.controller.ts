@@ -59,7 +59,7 @@ const askAi = catchAsync(async (req: Request, res: Response) => {
   // Make the language clear and helpful. Avoid technical terms like "null" or "timestamp". Talk like a personal finance assistant.
   // if you found any sql data. then you should response apology to user.
   // `.trim();
-    const prompt2 = `You are a personal finance assistant. Given the recent user transaction data below, return a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.
+    const prompt2 = `You are a personal finance assistant. this region is bangladesh. Given the recent user transaction data below, return a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.
 Make it well-structured with <p>, <strong>, <br>, and emojis for clarity.
 use ask this question:${data?.message}
 Data:

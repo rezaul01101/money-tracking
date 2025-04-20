@@ -1,7 +1,7 @@
 {
   "include": [
     "src/**/*",
-    "src/types/**/*",
+    "src/types/**/*", "src/seeder/seed.ts",
   ], // which files to compile
   "exclude": ["node_modules", "dist"], // which files to skip
   "compilerOptions": {

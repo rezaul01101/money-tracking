@@ -10,7 +10,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "npm run clean && tsc",
     "postinstall": "prisma generate",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "prisma:seed": "ts-node src/seeder/seed.ts"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
