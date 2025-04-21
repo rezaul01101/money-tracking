@@ -3,6 +3,8 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { TransactionService } from "./transaction.service";
 import { TransactionType } from "@prisma/client";
+import pick from "../../../shared/pick";
+import { paginationFields } from "../../../shared/pagination";
 
 const createTransaction = catchAsync(async (req: Request, res: Response)=> {
   const { ...transactionData  } = req.body;
@@ -32,8 +34,8 @@ const transactionList = catchAsync(async (req: Request, res: Response) => {
 const transactionListByType = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
   const {type}=req.params
-  
-  const response = await TransactionService.transactionListByType(user,type as TransactionType || "FULL");
+  const paginationOptions = pick(req.query, paginationFields);
+  const response = await TransactionService.transactionListByType(user,type as TransactionType || "FULL",paginationOptions);
   sendResponse(res, {
     statusCode: 200,
     success: true,

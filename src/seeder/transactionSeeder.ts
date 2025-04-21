@@ -6,8 +6,8 @@ const prisma = new PrismaClient();
 
 export default async function seedTransactions() {
   const userId = 2; // Make sure this user exists
-  const TOTAL = 500_000;
-  const BATCH_SIZE = 1000;
+  const TOTAL = 500;
+  const BATCH_SIZE = 100;
 
   // Get existing category & payment method IDs
   const categories = await prisma.category.findMany({ select: { id: true } });

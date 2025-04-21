@@ -1,5 +1,7 @@
 import { TransactionType, User } from "@prisma/client";
 import prisma from "../../../shared/prisma";
+import { IPaginationOptions } from "../../../interfaces/pagination";
+import { paginationHelpers } from "../../../helpers/paginationHelper";
 
 interface ITransactionData {
   id: number;
@@ -61,22 +63,45 @@ const transactionList = async (user: User): Promise<any> => {
 };
 const transactionListByType = async (
   user: User,
-  type: TransactionType | "FULL"
+  type: TransactionType | "FULL",
+  paginationOptions: IPaginationOptions
+
 ): Promise<any> => {
-  const result = await prisma.transaction.findMany({
-    where: {
-      user_id: user.id,
-      ...(type !== "FULL" && { type }),
+
+  const { page, limit, skip, sortBy, sortOrder } =
+  paginationHelpers.calculatePagination(paginationOptions);
+
+  const [result, total] = await prisma.$transaction([
+    prisma.transaction.findMany({
+      where: {
+        user_id: user.id,
+        ...(type !== "FULL" && { type }),
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        category: true,
+        paymentMethod: true,
+      },
+      skip: skip,
+      take: limit,
+    }),
+    prisma.transaction.count({
+      where: {
+        user_id: user.id,
+        ...(type !== "FULL" && { type }),
+      }
+    })
+  ]);
+  return {
+    meta: {
+      page,
+      limit,
+      total
     },
-    orderBy: {
-      date: "desc",
-    },
-    include: {
-      category: true,
-      paymentMethod: true,
-    },
-  });
-  return result;
+    data: result,
+  }
 };
 
 const transactionDelete = async (id: number, user: User): Promise<any> => {
