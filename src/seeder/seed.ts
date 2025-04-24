@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding started...");
   //   await seedUsers(prisma);
-    // await seedCategories(prisma);
+  //   await seedCategories(prisma);
   // await seedPaymentMethods(prisma);
   await seedTransactions()
   console.log("✅ Seeding completed!");

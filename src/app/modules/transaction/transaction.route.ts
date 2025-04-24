@@ -33,5 +33,10 @@ router.delete(
   auth("user"),
   TransactionController.transactionDelete
 );
+router.get(
+  "/full-year-income-expense/:year",
+  auth("user"),
+  TransactionController.fullYearIncomeExpense
+);
 
 export const TransactionRoutes = router;

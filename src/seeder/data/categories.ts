@@ -1,5 +1,5 @@
 import { TransactionType } from "@prisma/client";
-const userId = 2; 
+const userId = 1; 
 const categoryData = [
   { name: "Groceries", type: TransactionType.EXPENSE, user_id: userId },
   { name: "Salary", type: TransactionType.INCOME, user_id: userId },

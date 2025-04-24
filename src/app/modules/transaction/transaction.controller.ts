@@ -67,10 +67,22 @@ const updateTransaction = catchAsync(async (req: Request, res: Response) => {
     data: response,
   });
 });
+const fullYearIncomeExpense = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { year } = req.params;
+  const response = await TransactionService.fullYearIncomeExpense(user, year);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Full year income expense fetched successfully !",
+    data: response,
+  });
+});
 export const TransactionController = {
   createTransaction,
   updateTransaction,
   transactionList,
   transactionListByType,
-  transactionDelete
+  transactionDelete,
+  fullYearIncomeExpense
 };

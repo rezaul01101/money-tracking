@@ -4,6 +4,7 @@ import paymentMethodData from "./data/paymentMethod";
 
 export default async function seedPaymentMethods(prisma: PrismaClient) {
 const data = paymentMethodData;
+const userId=1
   for (const method of data) {
     await prisma.paymentMethod.create({
       data: {
@@ -11,7 +12,7 @@ const data = paymentMethodData;
         initialAmount: method.initialBalance,
         type: method.paymentType as PaymentType,
         notes: method.notes,
-        user: { connect: { id: 2 } }, // Assuming user with ID 1 exists
+        user: { connect: { id: userId } }, // Assuming user with ID 1 exists
       },
     });
   }

@@ -130,10 +130,57 @@ const updateTransaction = async (data: ITransactionData, user: User): Promise<an
   });
   return result;
 };
+const fullYearIncomeExpense = async (user: User,year:string): Promise<any> => {
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      user_id: user.id,
+      date: {
+        gte: new Date(Number(year), 0, 1),
+        lte: new Date(Number(year), 11, 31),
+      },
+    },
+    orderBy: {
+      date: "asc",
+    },
+    select: {
+      amount: true,
+      date: true,
+      type: true,
+    },
+  });
+
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const result = months.map((month, index) => {
+    const filteredTransactions = transactions.filter(transaction => {
+      const transactionDate = new Date(transaction.date);
+      return transactionDate.getMonth() === index;
+    });
+
+    const income = filteredTransactions
+      .filter(transaction => transaction.type === "INCOME")
+      .reduce((sum, transaction) => sum + transaction.amount.toNumber(), 0);
+
+    const expense = filteredTransactions
+      .filter(transaction => transaction.type === "EXPENSE")
+      .reduce((sum, transaction) => sum + transaction.amount.toNumber(), 0);
+
+    return {
+      name: month,
+      income: Number(income),
+      expense: Number(expense),
+    };
+  });
+  return result;
+};
 export const TransactionService = {
   insertIntoDB,
   transactionList,
   transactionDelete,
   updateTransaction,
   transactionListByType,
+  fullYearIncomeExpense
 };
