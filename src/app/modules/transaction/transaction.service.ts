@@ -52,7 +52,7 @@ const transactionList = async (user: User): Promise<any> => {
       user_id: user.id,
     },
     orderBy: {
-      date: "desc",
+      id: "desc",
     },
     include: {
       category: true,
@@ -78,7 +78,7 @@ const transactionListByType = async (
         ...(type !== "FULL" && { type }),
       },
       orderBy: {
-        date: "desc",
+        id: "desc",
       },
       include: {
         category: true,

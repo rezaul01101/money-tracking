@@ -40,8 +40,8 @@ export default async function seedTransactions() {
         TransactionType.INCOME,
       ]),
       date: faker.date.between({
-        from: "2024-01-01T00:00:00.000Z",
-        to: "2025-01-01T00:00:00.000Z",
+        from: "2025-01-01T00:00:00.000Z",
+        to: "2025-11-01T00:00:00.000Z",
       }),
       notes: faker.lorem.sentence(),
     }));
