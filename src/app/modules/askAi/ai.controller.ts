@@ -7,6 +7,7 @@ import config from "../../../config";
 import fs from "fs/promises";
 import path from "path";
 import prisma from "../../../shared/prisma";
+import askGemini from "../../../utils/gemini";
 
 const askAi = catchAsync(async (req: Request, res: Response) => {
   const { ...data } = req.body;
@@ -26,11 +27,7 @@ const askAi = catchAsync(async (req: Request, res: Response) => {
     User Question: ${data?.message}
 `.trim();
 
-  const ai = new GoogleGenAI({ apiKey: config?.google_api_key as string });
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: prompt,
-  });
+  const response = await askGemini(prompt);
 
   const sqlQuery = response.text?.replace(/```sql|```/g, "").trim();
   let cleanedSql = sqlQuery?.replace(/"/g, "");
@@ -48,18 +45,8 @@ const askAi = catchAsync(async (req: Request, res: Response) => {
 
   let summery;
   if (resData) {
-  //   const prompt2 = `
-  // You're an assistant that helps users understand their financial data.
-  
-  // Given the following data in JSON format, write a friendly summary in natural language that a normal user can easily understand.
-  
-  // Data:
-  // ${JSON.stringify(resData, null, 2)}
-  
-  // Make the language clear and helpful. Avoid technical terms like "null" or "timestamp". Talk like a personal finance assistant.
-  // if you found any sql data. then you should response apology to user.
-  // `.trim();
-    const prompt2 = `You are a personal finance assistant. this region is bangladesh. Given the recent user transaction data below, return a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.
+    const prompt2 =
+      `You are a personal finance assistant. this region is bangladesh. Given the recent user transaction data below, return a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.
 Make it well-structured with <p>, <strong>, <br>, and emojis for clarity.
 use ask this question:${data?.message}
 Data:
@@ -70,18 +57,12 @@ ${JSON.stringify(resData, null, 2)}
 if you found any sql data. then you should response apology to user
   `.trim();
 
-  
-
-    const summeryResponse = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt2,
-    });
-
+    const summeryResponse = await askGemini(prompt2);
     summery = summeryResponse.text;
   }
 
   if (!summery) {
-    summery =response.text;
+    summery = response.text;
   }
 
   sendResponse(res, {
