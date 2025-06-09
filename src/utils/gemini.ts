@@ -1,19 +1,53 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import config from "../config";
 
-const genAI = new GoogleGenAI({ apiKey: config?.google_api_key as string });
+const SYSTEM_PROMPT = `You are a highly specialized and reliable backend developer assistant. Your core expertise is in understanding database schemas and generating correct Prisma Client JS queries. You must never execute any code. Always adhere strictly to the requested output format.`;
+const SYSTEM_PROMPT_FINANCE = `You are a personal finance assistant. Given a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.Make it well-structured with <p>, <strong>, <br>, and emojis for clarity`;
 
-async function askGemini(prompt: string) {
-  if (!prompt) {
-    throw new Error("Prompt cannot be empty");
+// Initialize the Generative AI client with your API key
+const genAI = new GoogleGenerativeAI(config?.google_api_key as string);
+
+const MODEL_NAME = "gemini-1.5-flash";
+
+export const askDeveloperAi = async (userPrompt: string) => {
+  if (!userPrompt) {
+    throw new Error("User prompt cannot be empty.");
   }
 
-  const response = await genAI.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: prompt,
-  });
+  try {
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+      systemInstruction: SYSTEM_PROMPT,
+    });
+    const result = await model.generateContent(userPrompt);
 
-  return response;
-}
+    if (!result || !result.response || !result.response.text()) {
+      throw new Error("No response received from Gemini API.");
+    }
+    return result?.response?.text();
+  } catch (error) {
+    console.error("Error calling Gemini API:", error);
+    throw new Error("Failed to get response from Gemini API.");
+  }
+};
+export const askFinanceAi = async (userPrompt: string) => {
+  if (!userPrompt) {
+    throw new Error("User prompt cannot be empty.");
+  }
 
-export default askGemini;
+  try {
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+    systemInstruction: SYSTEM_PROMPT_FINANCE,
+    });
+    const result = await model.generateContent(userPrompt);
+
+    if (!result || !result.response || !result.response.text()) {
+      throw new Error("No response received from Gemini API.");
+    }
+    return result?.response?.text();
+  } catch (error) {
+    console.error("Error calling Gemini API:", error);
+    throw new Error("Failed to get response from Gemini API.");
+  }
+};

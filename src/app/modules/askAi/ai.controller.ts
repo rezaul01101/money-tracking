@@ -7,62 +7,49 @@ import config from "../../../config";
 import fs from "fs/promises";
 import path from "path";
 import prisma from "../../../shared/prisma";
-import askGemini from "../../../utils/gemini";
+import { askDeveloperAi, askFinanceAi } from "../../../utils/gemini";
+import { createFinanceMessage, createUserMessage } from "../../../shared/prompts";
 
 const askAi = catchAsync(async (req: Request, res: Response) => {
   const { ...data } = req.body;
   const user = req.user;
 
-  const prismaSchema = await fs.readFile(
-    path.join(__dirname, "../../../../prisma/schema.prisma"),
-    "utf8"
-  );
-
-  const prompt = `
-    You're an assistant that helps generate **raw PostgreSQL SQL queries** to be used with Prisma's \`$queryRaw\` method.
-    Given a user question and the Prisma schema below, return a **PostgreSQL SQL query string only**. No code block, no explanation — just the SQL string.
-    The SQL must be valid and match the Prisma schema.
-    Prisma Schema:
-    ${prismaSchema}
-    User Question: ${data?.message}
-`.trim();
-
-  const response = await askGemini(prompt);
-
-  const sqlQuery = response.text?.replace(/```sql|```/g, "").trim();
-  let cleanedSql = sqlQuery?.replace(/"/g, "");
-
-  if (!cleanedSql) {
-    throw new Error("No valid SQL query generated");
+  if (!data?.message) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: "Message is required",
+    });
   }
 
-  let resData;
-  try {
-    resData = await prisma.$queryRawUnsafe(cleanedSql);
-  } catch (error) {
-    // throw new Error(`Invalid SQL query: ${error.message}`);
+  const userMessage = await createUserMessage(data?.message);
+  if (!userMessage) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: "Failed to create user message",
+    });
   }
+  const response = await askDeveloperAi(userMessage);
+  const resText = response?.replace(/```json|```/g, "").trim();
+  const parsedResponse = JSON.parse(resText);
+  const prismaSql = parsedResponse?.prisma_code;
+
+  const resData = await prisma.$queryRawUnsafe(prismaSql);
+
 
   let summery;
   if (resData) {
-    const prompt2 =
-      `You are a personal finance assistant. this region is bangladesh. Given the recent user transaction data below, return a friendly summary **in english**, and format your response in clean HTML so it can be shown directly on a website.
-Make it well-structured with <p>, <strong>, <br>, and emojis for clarity.
-use ask this question:${data?.message}
-Data:
-${JSON.stringify(resData, null, 2)}
+    
+    const prompt2 = await createFinanceMessage(data?.message, resData);
 
-✅ Respond in: English  
-✅ Format: HTML only (no code blocks, no explanation).
-if you found any sql data. then you should response apology to user
-  `.trim();
-
-    const summeryResponse = await askGemini(prompt2);
-    summery = summeryResponse.text;
+    const summeryResponse = await askFinanceAi(prompt2);
+    console.log("Summery Response:", summeryResponse,data);
+    summery = summeryResponse;
   }
 
   if (!summery) {
-    summery = response.text;
+    summery = response;
   }
 
   sendResponse(res, {
@@ -70,7 +57,7 @@ if you found any sql data. then you should response apology to user
     success: true,
     message: "Ask AI successfully !",
     data: {
-      query: sqlQuery,
+      query: parsedResponse?.question,
       result: summery,
     },
   });
