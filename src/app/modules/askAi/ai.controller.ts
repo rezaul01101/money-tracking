@@ -1,11 +1,6 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
-
-import { GoogleGenAI } from "@google/genai";
-import config from "../../../config";
-import fs from "fs/promises";
-import path from "path";
 import prisma from "../../../shared/prisma";
 import { askDeveloperAi, askFinanceAi } from "../../../utils/gemini";
 import { createFinanceMessage, createUserMessage } from "../../../shared/prompts";
@@ -34,7 +29,7 @@ const askAi = catchAsync(async (req: Request, res: Response) => {
   const resText = response?.replace(/```json|```/g, "").trim();
   const parsedResponse = JSON.parse(resText);
   const prismaSql = parsedResponse?.prisma_code;
-
+  console.log("Prisma SQL Query:", prismaSql);
   const resData = await prisma.$queryRawUnsafe(prismaSql);
 
 

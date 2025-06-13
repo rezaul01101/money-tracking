@@ -6,6 +6,7 @@ import { TransactionRoutes } from "../modules/transaction/transaction.route";
 import { SettingsRoutes } from "../modules/settings/settings.route";
 import { PaymentMethodRoutes } from "../modules/paymentMethods/paymentMethod.route";
 import { AiRoutes } from "../modules/askAi/ai.route";
+import { DashboardRoutes } from "../modules/dashboard/dashboard.route";
 
 const router = express.Router();
 const moduleRoutes = [
@@ -36,6 +37,10 @@ const moduleRoutes = [
   {
     path: "/ai",
     route: AiRoutes,
+  },
+  {
+    path: "/dashboard",
+    route: DashboardRoutes,
   },
 ];
 
