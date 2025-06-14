@@ -27,7 +27,7 @@ const dashboardData = async (user: User): Promise<any> => {
     },
   });
 
-  // Query last month income
+  // Query last month expense
   const lastMonthIncome = await prisma.transaction.aggregate({
     where: {
       user_id: user.id,
@@ -41,11 +41,46 @@ const dashboardData = async (user: User): Promise<any> => {
       amount: true,
     },
   });
+
+    // Query current month income
+  const currentMonthExpense = await prisma.transaction.aggregate({
+    where: {
+      user_id: user.id,
+      type: TransactionType.EXPENSE,
+      date: {
+        gte: currentMonthStart,
+        lte: currentMonthEnd,
+      },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
+  // Query last month income
+  const lastMonthExpense = await prisma.transaction.aggregate({
+    where: {
+      user_id: user.id,
+      type: TransactionType.EXPENSE,
+      date: {
+        gte: lastMonthStart,
+        lte: lastMonthEnd,
+      },
+    },
+    _sum: {
+      amount: true,
+    },
+  });
+
   const result = {
     income:{
       currentMonth: currentMonthIncome._sum.amount || 0,
       lastMonth: lastMonthIncome._sum.amount || 0,
-    }
+    },
+    expense: {
+      currentMonth: currentMonthExpense._sum.amount || 0,
+      lastMonth: lastMonthExpense._sum.amount || 0,
+    },
   }
   return result;
 };
